@@ -4,6 +4,8 @@
 model on your own images. Insert an image, press **Predict**, and the segmented objects are
 drawn on top of it.
 
+![V7 Segmenter showing a prediction: 31 objects segmented on a PCB image, with the per-class counts, display options and object table on the right](docs/gui_screenshot.png)
+
 **Start it:** double-click `Start V7 GUI.bat`, or run `python run_gui.py [image]`. On a new computer, first run `Install requirements.bat` once (see Quick start).
 
 ## Using it
