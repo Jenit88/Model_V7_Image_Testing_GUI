@@ -71,7 +71,7 @@ cd Model_V7_Image_Testing_GUI
 1. Double-click **`Install requirements.bat`**. This is needed once per computer.
 2. Double-click **`Start V7 GUI.bat`**.
 
-The model (`model_v7_resource/best_fine_tuned_model_v7_instance.keras`, 231 MB) is stored
+The model (`model_v7_resource/best_fine_tuned_model_v7_instance.keras`, 27 MB) is stored
 with Git LFS, and `git clone` downloads it together with the code.
 
 If the application says the model is only a *Git LFS placeholder*, Git LFS was not active
@@ -88,7 +88,7 @@ git lfs pull
 
 | File | What it is |
 |---|---|
-| `best_fine_tuned_model_v7_instance.keras` | The fine-tuned V7 model (epoch 54), copied unchanged; sha256 starts `872f9bc06ecf0a2e`. |
+| `best_fine_tuned_model_v7_instance.keras` | The fine-tuned V7 model (epoch 54), re-saved without the optimizer state (weights unchanged); sha256 starts `44ca427fe56121a6`. |
 | `model_v7.py` | The V7 code, copied unchanged. The application imports it **read-only** (without writing anything into this folder). Every prediction is made by its own `predict_one_image`: letterbox to 512 × 512, model, instance decoding, confidence floor, and scaling back to the photo's own size. |
 | `final_model_selection.json` | The training run's record of how this model was chosen (for reference only). |
 | `training_logs/` | Every log of the training run that produced this model, copied unchanged (157 files): `training_log.csv` (69 epochs), `instance_checkpoint_history.json` (23 validation checks), `training_config.json`, `TRAINING_REPORT.md`, `model_summary.txt`, the final validation and test evaluations, TensorBoard event files and 140 validation previews. Not used by the application. |
