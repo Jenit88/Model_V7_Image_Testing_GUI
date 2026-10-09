@@ -91,10 +91,6 @@ git lfs pull
 | `final_model_selection.json` | The training run's record of how this model was chosen (for reference only). |
 | `training_logs/` | Every log of the training run that produced this model, copied unchanged (157 files): `training_log.csv` (69 epochs), `instance_checkpoint_history.json` (23 validation checks), `training_config.json`, `TRAINING_REPORT.md`, `model_summary.txt`, the final validation and test evaluations, TensorBoard event files and 140 validation previews. Not used by the application. |
 
-| Data set | mAP50-95 |
-|---|---|
-| Validation, 3,128 images | 83.5% |
-| New test set, 664 images | 71.5% |
 
 TensorFlow on native Windows runs on the CPU, so one prediction takes about 2.5 s on this laptop.
 The window stays responsive meanwhile.
