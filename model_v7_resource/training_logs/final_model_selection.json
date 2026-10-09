@@ -1,0 +1,72 @@
+{
+  "authoritative_copy": "/home/u117134c/Models/Model_v7_finetune_new3000/best_fine_tuned_model_v7_instance.keras",
+  "candidates": [
+    {
+      "file_size_bytes": 231039834,
+      "images_evaluated": 3128,
+      "instance_f1": 0.9541969997793955,
+      "instance_iou_threshold": 0.5,
+      "instance_precision": 0.9392779587404995,
+      "instance_recall": 0.9695976238511544,
+      "mask_map50": 0.957110618566599,
+      "mask_map50_95": 0.8350318367054264,
+      "parameters": 6343486,
+      "path": "/home/u117134c/Models/Model_v7_finetune_new3000/best_fine_tuned_instance_model_v7.keras",
+      "rank": 1,
+      "semantic_foreground_miou": 0.8644699501119371,
+      "status": "evaluated"
+    },
+    {
+      "file_size_bytes": 231039833,
+      "images_evaluated": 3128,
+      "instance_f1": 0.953620673030566,
+      "instance_iou_threshold": 0.5,
+      "instance_precision": 0.937847137554526,
+      "instance_recall": 0.9699338713292983,
+      "mask_map50": 0.9537601526127172,
+      "mask_map50_95": 0.8326901870677054,
+      "parameters": 6343486,
+      "path": "/home/u117134c/Models/Model_v7_finetune_new3000/best_fine_tuned_semantic_model_v7.keras",
+      "rank": 2,
+      "semantic_foreground_miou": 0.8679184009047859,
+      "status": "evaluated"
+    },
+    {
+      "file_size_bytes": 231039834,
+      "images_evaluated": 3128,
+      "instance_f1": 0.95332723231795,
+      "instance_iou_threshold": 0.5,
+      "instance_precision": 0.9367047528902711,
+      "instance_recall": 0.9705503250392289,
+      "mask_map50": 0.9527345338291866,
+      "mask_map50_95": 0.8326572818852933,
+      "parameters": 6343486,
+      "path": "/home/u117134c/Models/Model_v7_finetune_new3000/last_fine_tuned_model_v7.keras",
+      "rank": 3,
+      "semantic_foreground_miou": 0.8646639629058558,
+      "status": "evaluated"
+    },
+    {
+      "file_size_bytes": 231056425,
+      "images_evaluated": 3128,
+      "instance_f1": 0.8754606232891134,
+      "instance_iou_threshold": 0.5,
+      "instance_precision": 0.8254045066507842,
+      "instance_recall": 0.9319799372338041,
+      "mask_map50": 0.9116354932997337,
+      "mask_map50_95": 0.7524173062725159,
+      "parameters": 6343486,
+      "path": "/home/u117134c/Models/Model_v7_scratch_rtx/best_model_v7_instance.keras",
+      "rank": 4,
+      "semantic_foreground_miou": 0.7275350403664582,
+      "status": "evaluated"
+    }
+  ],
+  "selected_source": "/home/u117134c/Models/Model_v7_finetune_new3000/best_fine_tuned_instance_model_v7.keras",
+  "selection_rule": "highest complete-validation instance F1; semantic foreground mIoU, instance recall, and instance precision break ties",
+  "source_model": "/home/u117134c/Models/Model_v7_scratch_rtx/best_model_v7_instance.keras",
+  "source_model_is_candidate": true,
+  "training_mode": "fine_tune",
+  "transfer_manifest": null,
+  "validation_images": 3128
+}

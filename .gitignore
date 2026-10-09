@@ -1,0 +1,12 @@
+# Large training images and TensorBoard event files (157 MB). The small text logs
+# in training_logs/ are kept in the repository.
+model_v7_resource/training_logs/validation_previews/
+model_v7_resource/training_logs/tensorboard/
+model_v7_resource/training_logs/tensorboard_metrics/
+model_v7_resource/training_logs/dataset_and_augmentation_preview.png
+
+# Written while the application runs
+logs/
+config/settings.json
+__pycache__/
+*.py[cod]

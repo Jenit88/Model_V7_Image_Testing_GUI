@@ -1,0 +1,329 @@
+{
+  "augmentation": {
+    "brightness_limit": 0.1,
+    "contrast_limit": 0.1,
+    "cycle_length_epochs": 95,
+    "dihedral_transforms": 8,
+    "exact_rotation_angles": [
+      2.0,
+      4.0,
+      6.0,
+      8.0,
+      10.0,
+      12.0,
+      14.0,
+      16.0,
+      18.0,
+      20.0,
+      22.0,
+      24.0,
+      26.0,
+      28.0,
+      30.0,
+      32.0,
+      34.0,
+      36.0,
+      38.0,
+      40.0,
+      42.0,
+      44.0,
+      46.0,
+      48.0,
+      50.0,
+      52.0,
+      54.0,
+      56.0,
+      58.0,
+      60.0,
+      62.0,
+      64.0,
+      66.0,
+      68.0,
+      70.0,
+      72.0,
+      74.0,
+      76.0,
+      78.0,
+      80.0,
+      82.0,
+      84.0,
+      86.0,
+      88.0,
+      90.0
+    ],
+    "exact_rotation_modes": 45,
+    "exposure_gain_range": [
+      0.95,
+      1.05
+    ],
+    "extra_zoom_range": [
+      1.06,
+      1.12
+    ],
+    "gamma_range": [
+      0.9,
+      1.1
+    ],
+    "hue_shift_degrees": 3.0,
+    "maximum_translation_fraction": 0.04,
+    "mirror_side_probability": 0.25,
+    "mirror_sides_by_epoch": [
+      "left",
+      "top"
+    ],
+    "noise_std_range": [
+      0.005,
+      0.02
+    ],
+    "original_modes": 1,
+    "realistic_variant_modes": 49,
+    "rotate_realistic_variants_both_directions": true,
+    "saturation_gain_range": [
+      0.92,
+      1.08
+    ],
+    "source": "Model_v5 augmentation implementation plus a dihedral stream and a zoom-out branch",
+    "test_augmented": false,
+    "validation_augmented": false,
+    "zoom_in_probability": 0.0,
+    "zoom_in_range": [
+      1.0,
+      2.5
+    ],
+    "zoom_in_steps": [
+      1.15,
+      1.3,
+      1.45,
+      1.6,
+      1.75,
+      1.9,
+      2.05,
+      2.2,
+      2.35,
+      2.5
+    ],
+    "zoom_out_fill_value": 0,
+    "zoom_out_probability": 0.5,
+    "zoom_out_range": [
+      0.5,
+      1.0
+    ],
+    "zoom_out_steps": [
+      0.95,
+      0.9,
+      0.85,
+      0.8,
+      0.75,
+      0.7,
+      0.65,
+      0.6,
+      0.55,
+      0.5
+    ],
+    "zoom_safety_factor": 1.002,
+    "zoom_to_fill": true
+  },
+  "checkpoint_selection": {
+    "final_candidate_comparison": "complete validation split",
+    "instance_early_stopping_patience_evaluations": 5,
+    "instance_interval_epochs": 3,
+    "instance_monitor": "validation instance F1 at IoU 0.5",
+    "instance_subset_images": 0,
+    "primary_final_metric": "instance F1",
+    "semantic_monitor": "val_semantic_foreground_miou",
+    "tie_breaker": "mask mAP50-95, then semantic foreground mIoU, instance recall and instance precision"
+  },
+  "complete_v6_checkpoint_loaded": true,
+  "losses": {
+    "boundary": {
+      "name": "BoundaryBCEDiceFromLogits"
+    },
+    "head_weights": {
+      "boundary": 0.3,
+      "inner_distance": 10.0,
+      "semantic": 1.0
+    },
+    "inner_distance": {
+      "delta": 0.1,
+      "name": "MaskedInnerDistanceLoss",
+      "rim_weight": 2.0
+    },
+    "semantic": {
+      "class_weights": [
+        1.0,
+        3.4190409183502197,
+        8.0,
+        6.120898246765137,
+        6.798167705535889
+      ],
+      "component_weights": {
+        "dice": 0.3,
+        "focal": 0.45,
+        "lovasz": 0.25
+      },
+      "name": "SemanticFocalDiceLovaszFromLogits"
+    }
+  },
+  "mask_average_precision": {
+    "confidence_source": "mean class-specific semantic probability over each decoded instance mask",
+    "headline_metrics": [
+      "mask mAP50",
+      "mask mAP50-95"
+    ],
+    "iou_thresholds": [
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "max_detections_per_image": 300,
+    "recall_interpolation_points": 101
+  },
+  "model": {
+    "classes": [
+      {
+        "class_id": 0,
+        "class_name": "background"
+      },
+      {
+        "class_id": 1,
+        "class_name": "Rectangle"
+      },
+      {
+        "class_id": 2,
+        "class_name": "Rectangle_concave"
+      },
+      {
+        "class_id": 3,
+        "class_name": "circle"
+      },
+      {
+        "class_id": 4,
+        "class_name": "circle_full"
+      }
+    ],
+    "input_shape": [
+      null,
+      512,
+      512,
+      3
+    ],
+    "name": "Model_v7_PCB_Scratch_BiFPN_DualContext_DualDecoder",
+    "non_trainable_parameters": 0,
+    "output_shapes": {
+      "boundary": [
+        null,
+        512,
+        512,
+        1
+      ],
+      "inner_distance": [
+        null,
+        256,
+        256,
+        1
+      ],
+      "semantic": [
+        null,
+        512,
+        512,
+        5
+      ]
+    },
+    "total_parameters": 6343486,
+    "trainable_parameters": 6343486
+  },
+  "optimization": {
+    "batch_size": 2,
+    "effective_batch_size": 4,
+    "ema_momentum": 0.999,
+    "epochs": 100,
+    "global_clipnorm": 5.0,
+    "gradient_accumulation_steps": 2,
+    "minimum_learning_rate": 1e-06,
+    "optimizer": {
+      "class_name": "LossScaleOptimizer",
+      "config": {
+        "dynamic_growth_steps": 2000,
+        "initial_scale": 32768.0,
+        "inner_optimizer": {
+          "class_name": "AdamW",
+          "config": {
+            "amsgrad": false,
+            "beta_1": 0.9,
+            "beta_2": 0.999,
+            "clipnorm": null,
+            "clipvalue": null,
+            "ema_momentum": 0.999,
+            "ema_overwrite_frequency": null,
+            "epsilon": 1e-07,
+            "global_clipnorm": 5.0,
+            "gradient_accumulation_steps": 2,
+            "learning_rate": 9.999999747378752e-05,
+            "loss_scale_factor": null,
+            "name": "adam_w",
+            "use_ema": true,
+            "weight_decay": 5e-05
+          },
+          "module": "keras.optimizers",
+          "registered_name": null
+        },
+        "name": "loss_scale_optimizer"
+      }
+    },
+    "peak_learning_rate": 0.0001,
+    "schedule": "linear warm-up then cosine decay",
+    "use_ema": true,
+    "warmup_epochs": 3,
+    "weight_decay": 5e-05
+  },
+  "paths": {
+    "array_dir": "/home/u117134c/data/pcb_v7_combined_arrays",
+    "dataset_root": "/mnt/c/Users/u117134/Desktop/Data_preprocessing/1000_images/Split_Data",
+    "model_output_dir": "/home/u117134c/Models/Model_v7_finetune_new3000"
+  },
+  "preprocessing": {
+    "letterbox_fill_value": 114,
+    "method": "shared letterbox for prepare and predict"
+  },
+  "pretrained_encoder": false,
+  "pretrained_weights_loaded": false,
+  "runtime": {
+    "keras_version": "3.15.1",
+    "mixed_precision_policy": "mixed_float16",
+    "physical_gpus": [
+      {
+        "device_name": "NVIDIA RTX PRO 1000 Blackwell Generation Laptop GPU",
+        "physical_name": "/physical_device:GPU:0"
+      }
+    ],
+    "seed": 42,
+    "tensorflow_version": "2.21.0"
+  },
+  "source_model": "/home/u117134c/Models/Model_v7_scratch_rtx/best_model_v7_instance.keras",
+  "spatial_contract": {
+    "full_resolution": [
+      512,
+      512
+    ],
+    "image_size": 512,
+    "instance_head_resolution": [
+      256,
+      256
+    ],
+    "instance_head_size": 256,
+    "instance_id_dtype": "uint16",
+    "maximum_instance_id": 65535,
+    "offset_normalization": "dx / instance_head_width, dy / instance_head_height"
+  },
+  "trained_scratch_checkpoint_loaded": false,
+  "training": "fine_tune",
+  "transfer_learning": null,
+  "version": "Model_v7_PCB_Scratch_BiFPN_DualContext_DualDecoder"
+}

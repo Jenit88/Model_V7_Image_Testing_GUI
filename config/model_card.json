@@ -1,0 +1,27 @@
+{
+  "name": "V7 fine-tuned (epoch 54)",
+  "file": "model_v7_resource/best_fine_tuned_model_v7_instance.keras",
+  "sha256_prefix": "872f9bc06ecf0a2e",
+  "source": "Copy of best_fine_tuned_model_v7_instance.keras (epoch 54) from the 2026-09-29 fine-tune on the old + 3000_new_images data",
+  "epoch": 54,
+  "validation": {
+    "images": 3128,
+    "mask_map50_95": 0.835,
+    "mask_map50": 0.9571,
+    "f1": 0.9542
+  },
+  "test": {
+    "images": 664,
+    "set": "3000_new_images/split_data/test",
+    "evaluated": "2026-10-06",
+    "mask_map50_95": 0.715,
+    "mask_map50": 0.817,
+    "f1": 0.8785
+  },
+  "classes": [
+    "Rectangle",
+    "Rectangle_concave",
+    "circle",
+    "circle_full"
+  ]
+}

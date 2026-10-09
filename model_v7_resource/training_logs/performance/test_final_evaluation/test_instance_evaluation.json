@@ -1,0 +1,207 @@
+{
+  "images_evaluated": 664,
+  "inference_batch_size": 2,
+  "elapsed_seconds": 423.0967537390534,
+  "images_per_second": 1.5693809846849467,
+  "iou_threshold": 0.5,
+  "matching_method": "maximum-cardinality one-to-one same-class matching",
+  "mask_map50": 0.8169907002897251,
+  "mask_map75": 0.7935375222407901,
+  "mask_map50_95": 0.7149911932156788,
+  "mask_average_precision": {
+    "map50": 0.8169907002897251,
+    "map75": 0.7935375222407901,
+    "map50_95": 0.7149911932156788,
+    "map_by_iou": {
+      "0.50": 0.8169907002897251,
+      "0.55": 0.8142479288754569,
+      "0.60": 0.8107187929325929,
+      "0.65": 0.8056491904618517,
+      "0.70": 0.7996990751667621,
+      "0.75": 0.7935375222407901,
+      "0.80": 0.7804869400964616,
+      "0.85": 0.7277615238793467,
+      "0.90": 0.5943341473216691,
+      "0.95": 0.20648611089213245
+    },
+    "iou_thresholds": [
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "recall_interpolation_points": 101,
+    "active_foreground_classes": 4,
+    "max_detections_per_image": 300,
+    "confidence_source": "mean predicted probability of the decoded instance's class over all pixels in that instance",
+    "matching_method": "confidence-ranked greedy one-to-one same-image same-class mask matching at each IoU threshold",
+    "integration_method": "monotonic precision envelope integrated on 101 recall points",
+    "per_class": {
+      "Rectangle": {
+        "class_id": 1,
+        "ground_truth_instances": 4900,
+        "predicted_instances": 5345,
+        "ap50": 0.915199433466923,
+        "ap75": 0.8538843057605269,
+        "ap50_95": 0.782281069769523,
+        "ap_by_iou": {
+          "0.50": 0.915199433466923,
+          "0.55": 0.9104668524743998,
+          "0.60": 0.9006310440085394,
+          "0.65": 0.8874963932766256,
+          "0.70": 0.8693949842741335,
+          "0.75": 0.8538843057605269,
+          "0.80": 0.8321645939843523,
+          "0.85": 0.7758678882617255,
+          "0.90": 0.6378814822573471,
+          "0.95": 0.2398237199306568
+        }
+      },
+      "Rectangle_concave": {
+        "class_id": 2,
+        "ground_truth_instances": 440,
+        "predicted_instances": 315,
+        "ap50": 0.5259383454063654,
+        "ap75": 0.5123937108344926,
+        "ap50_95": 0.4887857143034954,
+        "ap_by_iou": {
+          "0.50": 0.5259383454063654,
+          "0.55": 0.5208873928852034,
+          "0.60": 0.5193173620161614,
+          "0.65": 0.5139797835431459,
+          "0.70": 0.5139797835431459,
+          "0.75": 0.5123937108344926,
+          "0.80": 0.5123937108344926,
+          "0.85": 0.50994484427402,
+          "0.90": 0.5054795395606646,
+          "0.95": 0.2535426701372622
+        }
+      },
+      "circle": {
+        "class_id": 3,
+        "ground_truth_instances": 1388,
+        "predicted_instances": 1535,
+        "ap50": 0.8892530626528794,
+        "ap75": 0.8774984366223184,
+        "ap50_95": 0.7848114671602053,
+        "ap_by_iou": {
+          "0.50": 0.8892530626528794,
+          "0.55": 0.88855983930148,
+          "0.60": 0.8863947411991779,
+          "0.65": 0.8851762176055814,
+          "0.70": 0.8809201344728529,
+          "0.75": 0.8774984366223184,
+          "0.80": 0.8664104866839819,
+          "0.85": 0.8249981731219771,
+          "0.90": 0.6668837840674424,
+          "0.95": 0.18201979587436135
+        }
+      },
+      "circle_full": {
+        "class_id": 4,
+        "ground_truth_instances": 3168,
+        "predicted_instances": 3501,
+        "ap50": 0.9375719596327325,
+        "ap75": 0.9303736357458228,
+        "ap50_95": 0.8040865216294918,
+        "ap_by_iou": {
+          "0.50": 0.9375719596327325,
+          "0.55": 0.9370776308407445,
+          "0.60": 0.9365320245064931,
+          "0.65": 0.9359443674220538,
+          "0.70": 0.9345013983769157,
+          "0.75": 0.9303736357458228,
+          "0.80": 0.9109789688830192,
+          "0.85": 0.8002351898596645,
+          "0.90": 0.5670917834012223,
+          "0.95": 0.1505582576262494
+        }
+      }
+    }
+  },
+  "overall": {
+    "tp": 9045,
+    "fp": 1651,
+    "fn": 851,
+    "predicted_instances": 10696,
+    "target_instances": 9896,
+    "precision": 0.8456432311144353,
+    "recall": 0.9140056588520614,
+    "f1": 0.8784965034965035
+  },
+  "macro_foreground": {
+    "precision": 0.7585535815501173,
+    "recall": 0.7844025530699573,
+    "f1": 0.7668839631659069,
+    "active_classes": 4
+  },
+  "per_class": {
+    "Rectangle": {
+      "class_id": 1,
+      "tp": 4589,
+      "fp": 756,
+      "fn": 311,
+      "predicted_instances": 5345,
+      "target_instances": 4900,
+      "precision": 0.8585594013096352,
+      "recall": 0.936530612244898,
+      "f1": 0.8958516349438751
+    },
+    "Rectangle_concave": {
+      "class_id": 2,
+      "tp": 165,
+      "fp": 150,
+      "fn": 275,
+      "predicted_instances": 315,
+      "target_instances": 440,
+      "precision": 0.5238095238095238,
+      "recall": 0.375,
+      "f1": 0.4370860927152318
+    },
+    "circle": {
+      "class_id": 3,
+      "tp": 1165,
+      "fp": 370,
+      "fn": 223,
+      "predicted_instances": 1535,
+      "target_instances": 1388,
+      "precision": 0.758957654723127,
+      "recall": 0.8393371757925072,
+      "f1": 0.7971262401642148
+    },
+    "circle_full": {
+      "class_id": 4,
+      "tp": 3126,
+      "fp": 375,
+      "fn": 42,
+      "predicted_instances": 3501,
+      "target_instances": 3168,
+      "precision": 0.8928877463581834,
+      "recall": 0.9867424242424242,
+      "f1": 0.9374718848403059
+    }
+  },
+  "decoder_thresholds": {
+    "semantic_confidence": 0.3,
+    "center_confidence": 0.1,
+    "center_nms_radius": 2,
+    "maximum_assignment_distance": 51,
+    "boundary_confidence": 0.5,
+    "minimum_instance_area": 13,
+    "minimum_component_area_fraction": 0.1,
+    "fallback_instance_score": 0.05,
+    "minimum_boundary_core_area": 6,
+    "maximum_centers_per_class": 150
+  },
+  "split": "test",
+  "model": "/home/u117134c/Models/Model_v7_finetune_new3000/best_fine_tuned_model_v7_instance.keras",
+  "generated_at_utc": "2026-10-06T00:57:28Z",
+  "evaluation_report_schema_version": 3,
+  "report_type": "instance_segmentation"
+}

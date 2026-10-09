@@ -1,0 +1,9 @@
+# The model (231 MB) is stored with Git LFS, so `git clone` brings it along.
+*.keras filter=lfs diff=lfs merge=lfs -text
+# Batch files need Windows line endings to run reliably in cmd.exe.
+*.bat text eol=crlf
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+# Training logs are kept byte-for-byte as the training run wrote them.
+model_v7_resource/training_logs/** -text
