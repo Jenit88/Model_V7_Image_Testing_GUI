@@ -33,6 +33,7 @@ class MainWindow:
         self.icons, self.scale = icons, scale
         self._actions: dict[str, list] = {}
         self.auto_predict = tk.BooleanVar(value=settings.auto_predict)
+        self.exact_mode = tk.BooleanVar(value=settings.exact_mode)
         self.show_segments = tk.BooleanVar(value=state.display.show_segments)
         self.outlines = tk.BooleanVar(value=state.display.outlines)
         self.layer = tk.StringVar(value=state.display.layer)
@@ -90,6 +91,8 @@ class MainWindow:
         model_menu.add_separator()
         model_menu.add_checkbutton(label="Predict automatically when an image is opened",
                                    variable=self.auto_predict, command=c.auto_predict_changed)
+        model_menu.add_checkbutton(label="Exact mode (slower; matches the evaluation outputs exactly)",
+                                   variable=self.exact_mode, command=c.exact_mode_changed)
         bar.add_cascade(label="Model", menu=model_menu)
 
         view_menu = tk.Menu(bar, tearoff=False)

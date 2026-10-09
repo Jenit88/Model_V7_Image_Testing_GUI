@@ -10,7 +10,7 @@ drawn on top of it.
 
 ## Using it
 
-1. The window opens and the model loads in the background, which takes about 15 s.
+1. The window opens and the model loads in the background, which takes about 8 s.
    The status bar at the bottom right turns green when it is ready.
 2. Click the **image icon** in the middle (or press Ctrl+O, or use File → Insert image) and
    choose a photo.
@@ -48,6 +48,7 @@ drawn on top of it.
 
 - **Folder browsing:** PgUp / PgDn (or the arrow buttons) open the previous or next photo in
   the same folder. Tick **Predict automatically** to run the model on each photo as it opens.
+- **Exact mode** (Model menu, off by default): see [Speed](#speed) below.
 - **Save overlay** (Ctrl+S): saves the photo with its segments at full resolution.
 - **Export** (Ctrl+E): writes a folder containing:
   - the model's own outputs: `instances.json`, `instances.png`, `semantic_colour.png`,
@@ -94,8 +95,50 @@ git lfs pull
 | `training_logs/` | Every log of the training run that produced this model, copied unchanged (157 files): `training_log.csv` (69 epochs), `instance_checkpoint_history.json` (23 validation checks), `training_config.json`, `TRAINING_REPORT.md`, `model_summary.txt`, the final validation and test evaluations, TensorBoard event files and 140 validation previews. Not used by the application. |
 
 
-TensorFlow on native Windows runs on the CPU, so one prediction takes about 2.5 s on this laptop.
-The window stays responsive meanwhile.
+### Speed
+
+TensorFlow on native Windows runs on the CPU. The window stays responsive while it works.
+
+| Measured on this laptop (CPU) | Before | Now |
+|---|---|---|
+| Model file size | 231 MB | 27 MB |
+| Model ready after start | about 10 s | about 8 s |
+| Model time per photo | about 1.9 s | about 0.6 s |
+| Whole prediction per photo (model + instance decoding + saving the outputs) | about 3.4 s | about 2.1 s |
+
+#### How the speed was improved
+
+1. **Optimizer state removed from the model file (231 MB → 27 MB).** The saved `.keras` file
+   still held the training state of the optimizer (AdamW moments, EMA weights and
+   gradient-accumulation buffers), about 200 MB that prediction never uses. The model was
+   re-saved with `include_optimizer=False`; the weights are bit-identical. This makes the
+   repository and the download much smaller; the load itself is only slightly faster.
+2. **No warm-up prediction at start-up (about 10 s → 8 s).** The application used to run one
+   throw-away prediction before reporting "ready". The model runs eagerly (step by step), so
+   that pass prepared almost nothing: the next prediction took as long. It was removed.
+3. **Fast mode: the model is compiled into one TensorFlow graph (1.9 s → 0.6 s per photo).**
+   Eager execution runs the network's 457 layers one Python call at a time. Fast mode wraps the
+   same weights in a `tf.function`, which TensorFlow traces once into a single graph and then
+   optimises (fusing operations and skipping the per-layer Python overhead). Tracing takes about
+   4 s once, in the background right after the model is ready; a prediction requested meanwhile
+   starts as soon as it finishes. The rest of each prediction (instance decoding and writing
+   the outputs, about 1.5 s) is done by `model_v7.py` and is unchanged.
+
+What does not change: about 5 s of the start-up is TensorFlow itself being imported, and about
+2.5 s is Keras rebuilding the network from the file. Every TensorFlow application pays these.
+
+#### Fast mode and exact mode
+
+| | Exact mode | Fast mode (default) |
+|---|---|---|
+| Model time per photo | about 2.0 s | about 0.6 s |
+| Outputs | identical to the evaluation outputs | floating-point rounding differs slightly |
+
+Because the compiled graph rounds in a different order, a few pixels on object edges can change
+class (99.98 % or more of pixels agreed on 10 test photos), and an object right at the
+confidence floor can appear or disappear (1 of those 10 photos gained a 135-pixel object at
+confidence 0.32). Turn on **Model → Exact mode** when the results must match the evaluation
+outputs exactly; the choice is remembered between sessions.
 
 ## Architecture
 
@@ -139,7 +182,7 @@ From this folder:
 python -m unittest discover -s tests -t . -v
 ```
 
-The model smoke test loads the real model and predicts one photo (about 20 s). It is opt-in:
+The model smoke test loads the real model, predicts one photo and compares fast and exact mode (about 25 s). It is opt-in:
 
 ```
 set V7_MODEL_TESTS=1

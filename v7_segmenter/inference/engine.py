@@ -5,6 +5,11 @@ register on import, which the saved model needs) and every prediction is made
 by its own predict_one_image -- letterbox to 512, model, instance decoding,
 confidence floor, and restoration to the photo's own size. This adapter only
 converts that function's result into domain objects.
+
+Fast mode (the default) hands predict_one_image a graph-compiled wrapper of the
+model: about 3x faster per photo on the CPU, but floating-point rounding
+differs slightly from the eager model, so a few edge pixels may change class.
+Exact mode keeps the plain eager model, which matches the evaluation outputs.
 """
 from __future__ import annotations
 
@@ -61,12 +66,18 @@ class V7Engine:
         self.paths = paths
         self._code = None
         self._model = None
+        self._compiled = None          # graph-compiled runner, built by compile_fast()
+        self.exact_mode = False
         self._classes: tuple[SegmentClass, ...] = DEFAULT_CLASSES
         self.info: ModelInfo | None = None
 
     @property
     def ready(self) -> bool:
         return self._model is not None
+
+    @property
+    def fast_ready(self) -> bool:
+        return self._compiled is not None
 
     @property
     def classes(self) -> tuple[SegmentClass, ...]:
@@ -89,11 +100,8 @@ class V7Engine:
 
         model = tf.keras.models.load_model(self.paths.model_file, compile=False)
         code.validate_model_output_shapes(model)
-        # One throw-away pass, so the first real prediction does not also pay
-        # for TensorFlow tracing the graph.
-        blank = np.full((1, code.IMG_SIZE, code.IMG_SIZE, 3),
-                        code.LETTERBOX_FILL_VALUE / 255.0, dtype=np.float32)
-        code.unpack_model_outputs(model(blank, training=False))
+        # No warm-up pass: the eager model has almost nothing to trace, so a
+        # throw-away prediction here only delayed "ready" by a full prediction.
 
         card = self._read_model_card()
         digest = sha256_prefix(self.paths.model_file)
@@ -113,6 +121,30 @@ class V7Engine:
         log.info("model ready in %.1f s on %s (sha256 %s)", self.info.load_seconds,
                  self.info.device, digest)
         return self.info
+
+    def compile_fast(self) -> float:
+        """Build and trace the graph-compiled runner (about 4 s, once). Runs on
+        the worker thread, so a prediction requested meanwhile waits for it."""
+        if self._compiled is not None:
+            return 0.0
+        if not self.ready:
+            raise RuntimeError("The model has not finished loading.")
+        started = time.perf_counter()
+        compiled = _compiled_runner(self._model, self._code.IMG_SIZE)
+        blank = np.full((1, self._code.IMG_SIZE, self._code.IMG_SIZE, 3),
+                        self._code.LETTERBOX_FILL_VALUE / 255.0, dtype=np.float32)
+        self._code.unpack_model_outputs(compiled(blank, training=False))
+        self._compiled = compiled
+        seconds = time.perf_counter() - started
+        log.info("fast (graph-compiled) predictions ready in %.1f s", seconds)
+        return seconds
+
+    @property
+    def _runner(self):
+        """The model predict_one_image is given: compiled unless exact mode is on."""
+        if self.exact_mode or self._compiled is None:
+            return self._model
+        return self._compiled
 
     def _import_model_code(self):
         loaded = sys.modules.get(self.MODULE_NAME)
@@ -147,7 +179,8 @@ class V7Engine:
         if not self.ready:
             raise RuntimeError("The model has not finished loading.")
         started = time.perf_counter()
-        result = self._code.predict_one_image(self._model, Path(image_path), Path(output_dir),
+        runner = self._runner
+        result = self._code.predict_one_image(runner, Path(image_path), Path(output_dir),
                                               model_path=self.paths.model_file)
         artifacts = {name: Path(path) for name, path in result["artifacts"].items()}
         instance_map = np.load(artifacts["instance_ids"])
@@ -176,6 +209,30 @@ class V7Engine:
             below_confidence_floor=int(result.get("instances_below_confidence_floor", 0)),
             wall_seconds=time.perf_counter() - started,
         )
-        log.info("predicted %d objects for %s in %.2f s", len(objects), image_path,
-                 prediction.wall_seconds)
+        log.info("predicted %d objects for %s in %.2f s (%s)", len(objects), image_path,
+                 prediction.wall_seconds, "exact" if runner is self._model else "fast")
         return prediction
+
+
+def _compiled_runner(model, img_size: int):
+    """A Keras Model whose call runs `model` as one traced tf.function graph.
+
+    It subclasses tf.keras.Model because predict_one_image checks for one; the
+    weights are the original model's, shared, not copied."""
+    import tensorflow as tf
+
+    class CompiledV7(tf.keras.Model):
+        def __init__(self, inner):
+            super().__init__(name="v7_compiled")
+            self.inner = inner
+            self._graph = tf.function(
+                lambda images: inner(images, training=False),
+                input_signature=[tf.TensorSpec([None, img_size, img_size, 3], tf.float32)])
+
+        def call(self, images, training=False):
+            return self._graph(tf.cast(images, tf.float32))
+
+        def __call__(self, images, training=False, **kwargs):
+            return self.call(images, training=False)
+
+    return CompiledV7(model)

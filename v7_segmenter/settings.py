@@ -22,6 +22,7 @@ class Settings:
     show_segments: bool = True
     show_outlines: bool = True
     auto_predict: bool = False
+    exact_mode: bool = False           # eager model, bit-identical to the evaluation outputs
 
     MAX_RECENT: ClassVar[int] = 10
 

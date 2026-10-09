@@ -95,7 +95,8 @@ class MainController:
 
     # ---- model -------------------------------------------------------------------
     def start(self) -> None:
-        self.state.set_activity(message="Loading the V7 model… (about 15 s)")
+        self.engine.exact_mode = self.settings.exact_mode
+        self.state.set_activity(message="Loading the V7 model… (about 8 s)")
         self.worker.submit(self.engine.load, on_success=self._model_loaded,
                            on_error=self._model_failed)
 
@@ -104,8 +105,38 @@ class MainController:
         hint = " Press Predict." if self.state.document else " Insert an image to start."
         self.state.set_activity(
             message=f"Model ready on {info.device} (loaded in {info.load_seconds:.0f} s).{hint}")
+        if not self.engine.exact_mode:
+            self._compile_fast()
         if self.window.auto_predict.get() and self.state.document and not self.state.prediction:
             self.predict()
+
+    def _compile_fast(self) -> None:
+        """Queue the one-off graph compile; a prediction asked for meanwhile
+        runs after it, on the same worker thread."""
+        self.worker.submit(self.engine.compile_fast, on_success=self._fast_ready,
+                           on_error=self._fast_failed)
+
+    def _fast_ready(self, seconds: float) -> None:
+        if seconds and not self.state.predicting and not self.engine.exact_mode:
+            self.state.set_activity(message=f"Fast predictions ready (compiled in {seconds:.0f} s).")
+
+    def _fast_failed(self, error: Exception) -> None:
+        # The eager model keeps working, so this is not shown as an error dialog.
+        log.warning("fast mode unavailable, predicting in exact mode: %s", error)
+
+    def exact_mode_changed(self) -> None:
+        exact = bool(self.window.exact_mode.get())
+        self.engine.exact_mode = exact
+        if exact:
+            message = "Exact mode on: predictions match the evaluation outputs (about 2 s each)."
+        elif self.engine.fast_ready:
+            message = "Exact mode off: fast predictions."
+        else:
+            message = "Exact mode off: compiling fast predictions… (about 4 s)"
+            if self.state.is_model_ready:
+                self._compile_fast()
+        if not self.state.predicting:
+            self.state.set_activity(message=message)
 
     def _model_failed(self, error: Exception) -> None:
         self.state.model_failed(str(error))
@@ -345,6 +376,7 @@ class MainController:
             settings.show_segments = display.show_segments
             settings.show_outlines = display.outlines
             settings.auto_predict = bool(self.window.auto_predict.get())
+            settings.exact_mode = bool(self.window.exact_mode.get())
             settings.save(self.paths.settings_file)
         except Exception:
             log.exception("could not save settings")
